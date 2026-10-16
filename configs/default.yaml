@@ -1,0 +1,78 @@
+# =============================================================================
+# RIS-assisted UAV cognitive radio — default configuration
+# Values follow the project specification (Sec. 5.3) unless tagged [ADDED],
+# in which case the justification is in LOG.md under the referenced entry.
+# =============================================================================
+seed: 42
+
+# ---- system dimensions -------------------------------------------------------
+N: 16                    # RIS elements (swept over 8, 16, 32, 64)
+M: 1                     # UAV antennas (Phase 4 uses 8)
+ris_shapes:              # [ADDED] UPA layout (horizontal, vertical) per N
+  8: [4, 2]
+  16: [4, 4]
+  32: [8, 4]
+  64: [8, 8]
+
+# ---- link budget --------------------------------------------------------------
+P_max_dBm: 20            # swept 0..30
+I_th_dBm: -90            # swept -100..-80
+B_Hz: 1.0e+6            # NB: PyYAML needs the explicit exponent sign, "1.0e6" parses as a string
+NF_dB: 10                # -> sigma^2 = -104 dBm
+C0_dB: -30               # path loss at 1 m; implies lambda = 4*pi*10^(C0/20) = 0.397 m
+alpha: {uav_ris: 2.2, ris_ground: 2.8, uav_ground: 3.6}
+K_dB: {uav_ris: 10, ris_ground: 3, uav_ground: 0}
+blockage_dB: 0.0         # [ADDED, E00+E02] extra loss on direct UAV-ground links; 0 keeps the spec geometry.
+                         # 10 dB was tried and REJECTED: PU constraint binds in only 7.5% of states (E02).
+
+# ---- mobility & fading --------------------------------------------------------
+rho_fading: 0.9          # Gauss-Markov coefficient for links with a moving end
+dt_s: auto               # [ADDED, E01] control period; 'auto' = Jakes-consistent J0(2*pi*fD*dt) = rho
+uav: {height_m: 100, radius_m: 30, speed_mps: 5}
+positions_m:
+  ris: [60, 0, 10]
+  su: [65, 5, 0]
+  pu: [55, -10, 0]
+  target: [40, 40, 0]
+
+# ---- episodes and data splits ---------------------------------------------------
+episode_len: 200
+episodes_per_seed: 4     # [ADDED] each test seed yields 4 flight segments (20 in total)
+train_seeds: [0, 1, 2, 3, 4]
+val_seeds: [50, 51]      # [ADDED] model selection only; never used for reported numbers
+test_seeds: [100, 101, 102, 103, 104]
+
+# ---- baselines ------------------------------------------------------------------
+elementwise: {levels: 16, max_sweeps: 5}
+sdr: {randomizations: 100, solver: CLARABEL, alternating_iters: 5}
+
+# ---- TD3 --------------------------------------------------------------------------
+td3:
+  power_mode: project    # [ADDED, E05] 'project' (analytic power) or 'learn' (spec: P in action + penalty)
+  action_param: circular # [ADDED, E05] 'circular' (cos/sin pairs), 'residual' (E09) or 'linear' (spec: theta = pi (u + 1))
+  penalty: linear        # 'linear' (spec) or 'db'  — only used when power_mode == learn
+  lam: 5.0
+  learning_rate: 1.0e-3
+  buffer_size: 200000
+  batch_size: 256
+  gamma: 0.3
+  tau: 0.005
+  policy_delay: 2
+  target_noise: 0.2
+  target_noise_clip: 0.5
+  action_noise: 0.1
+  net_arch: [400, 300]
+  learning_starts: 1000
+  total_timesteps: 200000
+  eval_every: 5000
+  val_episodes: 4
+
+# ---- Phase 4: integrated sensing and communication ----------------------------------
+sensing:
+  M: 8
+  L: 100                 # slots per frame
+  rho_grid: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]
+  mc_trials: 500
+  rcs_m2: 1.0            # [ADDED] C_r = lambda^2 * RCS / (4 pi)^3  (monostatic radar equation)
+  grid_deg: 0.1
+  array_axis: x          # [ADDED] UAV ULA lies along the global x-axis (fixed heading)

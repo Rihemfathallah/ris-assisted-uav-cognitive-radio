@@ -1,0 +1,11 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+report/*.aux
+report/*.log
+report/*.out
+report/*.fdb_latexmk
+report/*.fls
+report/*.blg
+report/*.bbl
+.claude/settings.local.json

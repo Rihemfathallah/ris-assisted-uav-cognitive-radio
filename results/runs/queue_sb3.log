@@ -1,0 +1,11 @@
+queue: JOBS=10  main=200000 steps x [0 1 2 3 4]  ablations=100000 steps x [0 1 2]
+start td3_N16_seed0 (200000 steps)
+start td3_N16_seed1 (200000 steps)
+start td3_N16_seed2 (200000 steps)
+start td3_N16_seed3 (200000 steps)
+start td3_N16_seed4 (200000 steps)
+start td3res_N16_seed0 (200000 steps)
+start td3res_N16_seed1 (200000 steps)
+start td3res_N16_seed2 (200000 steps)
+start td3res_N16_seed3 (200000 steps)
+start td3res_N16_seed4 (200000 steps)

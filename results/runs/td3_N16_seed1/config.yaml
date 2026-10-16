@@ -1,0 +1,116 @@
+seed: 42
+N: 16
+M: 1
+ris_shapes:
+  8:
+  - 4
+  - 2
+  16:
+  - 4
+  - 4
+  32:
+  - 8
+  - 4
+  64:
+  - 8
+  - 8
+P_max_dBm: 20
+I_th_dBm: -90
+B_Hz: 1000000.0
+NF_dB: 10
+C0_dB: -30
+alpha:
+  uav_ris: 2.2
+  ris_ground: 2.8
+  uav_ground: 3.6
+K_dB:
+  uav_ris: 10
+  ris_ground: 3
+  uav_ground: 0
+blockage_dB: 0.0
+rho_fading: 0.9
+dt_s: auto
+uav:
+  height_m: 100
+  radius_m: 30
+  speed_mps: 5
+positions_m:
+  ris:
+  - 60
+  - 0
+  - 10
+  su:
+  - 65
+  - 5
+  - 0
+  pu:
+  - 55
+  - -10
+  - 0
+  target:
+  - 40
+  - 40
+  - 0
+episode_len: 200
+episodes_per_seed: 4
+train_seeds:
+- 0
+- 1
+- 2
+- 3
+- 4
+val_seeds:
+- 50
+- 51
+test_seeds:
+- 100
+- 101
+- 102
+- 103
+- 104
+elementwise:
+  levels: 16
+  max_sweeps: 5
+sdr:
+  randomizations: 100
+  solver: CLARABEL
+  alternating_iters: 5
+td3:
+  power_mode: project
+  action_param: circular
+  penalty: linear
+  lam: 5.0
+  learning_rate: 0.001
+  buffer_size: 200000
+  batch_size: 256
+  gamma: 0.3
+  tau: 0.005
+  policy_delay: 2
+  target_noise: 0.2
+  target_noise_clip: 0.5
+  action_noise: 0.1
+  net_arch:
+  - 400
+  - 300
+  learning_starts: 1000
+  total_timesteps: 200000
+  eval_every: 5000
+  val_episodes: 4
+sensing:
+  M: 8
+  L: 100
+  rho_grid:
+  - 0.05
+  - 0.1
+  - 0.15
+  - 0.2
+  - 0.25
+  - 0.3
+  - 0.35
+  - 0.4
+  - 0.45
+  - 0.5
+  mc_trials: 500
+  rcs_m2: 1.0
+  grid_deg: 0.1
+  array_axis: x
