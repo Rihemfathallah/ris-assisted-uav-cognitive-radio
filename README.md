@@ -1,6 +1,6 @@
 # RIS-Assisted UAV Cognitive Radio with Integrated Sensing (RIS-CR-DRL)
 
-**Author: Rihem Fathallah **
+** Author: Rihem Fathallah **
 
 A UAV relays data to a secondary user (SU) with the help of a Reconfigurable Intelligent
 Surface (RIS), while sharing spectrum with a licensed primary user (PU) it must not interfere
